@@ -1,4 +1,4 @@
-# 🥐 Pan & Brunch — Backend API REST
+# Pan & Brunch — Backend API REST
 
 Sistema de gestión de reservaciones y menú digital para la pastelería **Pan & Brunch**, Villahermosa, Tabasco.
 
@@ -7,21 +7,21 @@ Sistema de gestión de reservaciones y menú digital para la pastelería **Pan &
 ## Equipo de desarrollo
 
 | Nombre | Matrícula | Rol |
-|--------|-----------|-----|
-| Ing. Emmanuel | 210785 | Desarrollador Full Stack |
+|----------|----------|----------|
+| Cristofer Emmanuel de la Cruz Aparicio | 210785 | Estudiante de ISC 8vo ciclo |
 
 **Materia:** Sistemas Cliente-Servidor 1 / Desarrollo de Aplicaciones con Bases de Datos / Desarrollo de Aplicaciones con Bibliotecas JS  
-**Profesor:** _(nombre del profesor)_  
-**Institución:** _(nombre de la institución)_  
-**Semestre:** 2025-B
+**Profesor:** Jesus Alejandro Flores Hernandez  
+**Institución:** Universidad Autónoma del Carmen  
+**Semestre:** 8vo
 
 ---
 
 ## Descripción del proyecto
 
-Aplicación web full stack que funciona simultáneamente como **landing page pública** (menú y formulario de reservaciones) y **panel de administración** con autenticación JWT. Las reservaciones generan automáticamente un mensaje formateado para WhatsApp.
+Aplicación web full stack que funciona simultáneamente como **landing page pública** (menú y formulario de reservaciones) y **panel de administración** con autenticación JWT. Las reservaciones generan automáticamente un mensaje con formato para WhatsApp.
 
-**Stack:** React + Vite (frontend) · Node.js + Express (backend) · SQLite via `better-sqlite3`  
+**Stack:** React + Vite (frontend) · Node.js + Express (backend) · SQLite mediante `better-sqlite3`  
 **Deploy:** Render (backend) + Render Static Sites (frontend)
 
 ---
@@ -43,23 +43,27 @@ npm run seed
 npm run dev
 ```
 
-El servidor corre en: `http://localhost:3000`
+El servidor corre en:
+
+```text
+http://localhost:3000
+```
 
 ---
 
 ## Scripts disponibles
 
 | Script | Descripción |
-|--------|-------------|
+|----------|----------|
 | `npm run dev` | Inicia el servidor con `node --watch` (recarga automática) |
 | `npm start` | Inicia el servidor en modo producción |
-| `npm run seed` | Crea y puebla la BD con datos de prueba |
+| `npm run seed` | Crea y puebla la base de datos con datos de prueba |
 
 ---
 
 ## Estructura del proyecto
 
-```
+```text
 pan-brunch-server/
 ├── db/
 │   ├── database.js       # Conexión singleton a SQLite
@@ -75,7 +79,7 @@ pan-brunch-server/
 │   ├── menu.routes.js        # Menú público
 │   ├── reservacion.routes.js # Reservaciones
 │   └── admin.routes.js       # Panel administrativo
-├── controllers/          # Lógica de negocio (próxima tarea)
+├── controllers/          # Lógica de negocio
 ├── .gitignore
 ├── package.json
 ├── README.md
@@ -86,41 +90,50 @@ pan-brunch-server/
 
 ## Endpoints del sistema
 
-> **Base URL:** `http://localhost:3000/api`  
-> Los endpoints marcados con 🔒 requieren token JWT en el header:  
-> `Authorization: Bearer <token>`  
-> Los marcados con 👑 además requieren rol de **administrador**.
+**Base URL**
+
+```text
+http://localhost:3000/api
+```
+
+Los endpoints marcados con **[JWT]** requieren token JWT en el encabezado:
+
+```text
+Authorization: Bearer <token>
+```
+
+Los marcados con **[ADMIN]** requieren además rol de administrador.
 
 ---
 
 ### Autenticación
 
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| `POST` | `/auth/login` | Iniciar sesión. Recibe `{ username, password }`, devuelve `{ token, nombre, rol }` | Público |
-| `POST` | `/auth/logout` | Cerrar sesión (invalida token en cliente) | 🔒 |
+| Método | Endpoint | Descripción | Acceso |
+|----------|----------|----------|----------|
+| `POST` | `/auth/login` | Iniciar sesión. Recibe `{ username, password }` y devuelve `{ token, nombre, rol }` | Público |
+| `POST` | `/auth/logout` | Cerrar sesión (invalida el token en cliente) | [JWT] |
 
 ---
 
 ### Menú público
 
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| `GET` | `/menu` | Categorías activas con sus productos disponibles agrupados | Público |
-| `GET` | `/categorias` | Lista de todas las categorías activas | Público |
-| `GET` | `/productos` | Lista de todos los productos disponibles | Público |
-| `GET` | `/ocasiones` | Lista de tipos de ocasión para el formulario de reserva | Público |
+| Método | Endpoint | Descripción | Acceso |
+|----------|----------|----------|----------|
+| `GET` | `/menu` | Categorías activas con productos disponibles agrupados | Público |
+| `GET` | `/categorias` | Lista de categorías activas | Público |
+| `GET` | `/productos` | Lista de productos disponibles | Público |
+| `GET` | `/ocasiones` | Lista de tipos de ocasión para reservaciones | Público |
 
 ---
 
 ### Reservaciones
 
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| `POST` | `/reservaciones` | Crear nueva reservación. Guarda cliente, reservación y genera notificación WhatsApp | Público |
-| `GET` | `/reservaciones` | Listar todas las reservaciones (con filtros opcionales: `?status=pendiente&fecha=2025-08-15`) | 🔒 |
-| `GET` | `/reservaciones/:id` | Ver detalle completo de una reservación | 🔒 |
-| `PATCH` | `/reservaciones/:id/status` | Cambiar estado de la reservación (`pendiente` / `confirmada` / `cancelada`). Registra en historial. | 🔒 |
+| Método | Endpoint | Descripción | Acceso |
+|----------|----------|----------|----------|
+| `POST` | `/reservaciones` | Crear reservación y generar notificación WhatsApp | Público |
+| `GET` | `/reservaciones` | Listar reservaciones con filtros opcionales | [JWT] |
+| `GET` | `/reservaciones/:id` | Obtener detalle de una reservación | [JWT] |
+| `PATCH` | `/reservaciones/:id/status` | Actualizar estado de reservación y registrar historial | [JWT] |
 
 ---
 
@@ -128,43 +141,57 @@ pan-brunch-server/
 
 #### Productos
 
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| `POST` | `/admin/productos` | Crear nuevo producto en el menú | 👑 |
-| `PATCH` | `/admin/productos/:id` | Editar datos de un producto (nombre, precio, disponibilidad) | 👑 |
-| `DELETE` | `/admin/productos/:id` | Eliminar producto del menú | 👑 |
+| Método | Endpoint | Descripción | Acceso |
+|----------|----------|----------|----------|
+| `POST` | `/admin/productos` | Crear producto | [ADMIN] |
+| `PATCH` | `/admin/productos/:id` | Editar producto | [ADMIN] |
+| `DELETE` | `/admin/productos/:id` | Eliminar producto | [ADMIN] |
 
 #### Categorías
 
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| `POST` | `/admin/categorias` | Crear nueva categoría | 👑 |
-| `PATCH` | `/admin/categorias/:id` | Editar categoría (nombre, activar/desactivar) | 👑 |
+| Método | Endpoint | Descripción | Acceso |
+|----------|----------|----------|----------|
+| `POST` | `/admin/categorias` | Crear categoría | [ADMIN] |
+| `PATCH` | `/admin/categorias/:id` | Editar categoría | [ADMIN] |
 
 #### Historial y auditoría
 
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| `GET` | `/admin/historial` | Ver historial completo de cambios de estado en reservaciones | 🔒 |
-| `GET` | `/admin/notificaciones` | Ver mensajes WhatsApp generados por reservación | 🔒 |
+| Método | Endpoint | Descripción | Acceso |
+|----------|----------|----------|----------|
+| `GET` | `/admin/historial` | Consultar historial de cambios de estado | [JWT] |
+| `GET` | `/admin/notificaciones` | Consultar mensajes WhatsApp generados | [JWT] |
 
 ---
 
 ## Modelo de datos
 
-El sistema cuenta con **9 tablas** normalizadas hasta 3NF:
+El sistema cuenta con **9 tablas** normalizadas hasta la Tercera Forma Normal (3NF):
 
-`rol` · `usuario` · `categoria` · `producto` · `ocasion` · `cliente` · `reservacion` · `notificacion` · `historial_estado`
+```text
+rol
+usuario
+categoria
+producto
+ocasion
+cliente
+reservacion
+notificacion
+historial_estado
+```
 
-Consulta el diagrama ER completo en el archivo `210785-tareabd1.md`.
+Consulta el diagrama Entidad-Relación completo en el archivo:
+
+```text
+210785-tareabd1.md
+```
 
 ---
 
-## Credenciales de prueba (seed)
+## Credenciales de prueba
 
-| Username | Password | Rol |
-|----------|----------|-----|
+| Usuario | Contraseña | Rol |
+|----------|----------|----------|
 | `admin` | `admin123` | Administrador |
 | `anastaff` | `staff123` | Staff |
 
-> ⚠️ Solo para entorno de desarrollo. No usar en producción.
+> Estas credenciales son únicamente para entornos de desarrollo y pruebas.
