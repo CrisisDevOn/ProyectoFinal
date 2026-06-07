@@ -1,0 +1,33 @@
+{
+  "name": "pan-brunch-server",
+  "version": "1.0.0",
+  "description": "Backend API REST para el sistema Pan & Brunch — Pastelería y Brunch",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "seed": "node db/seed.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CrisisDevOn/ProyectoFinal.git"
+  },
+  "keywords": [
+    "express",
+    "sqlite",
+    "rest-api",
+    "reservaciones"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "sql.js": "^1.10.3",
+    "bcryptjs": "^2.4.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2"
+},
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
